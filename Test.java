@@ -15,9 +15,8 @@ import java.util.Scanner;
 
 public class Test {
 
-    // Function to convert from EUR
-    // using Java Swing
-    public static float getData(String currency) throws Exception {
+//Function to fetch data from fixer.io API    
+    public static double getData(String currency) throws Exception {
         var url = "http://data.fixer.io/api/latest?access_key=69cb123726c63fd2a36f2804e73bb0b7";
         var req = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
         var cli = HttpClient.newBuilder().build();
@@ -28,9 +27,14 @@ public class Test {
                 temp = Double.parseDouble(s.substring(6));
             }
         }
-        return (float) temp;
+        return temp;
     }
-
+    
+    
+// Function to convert from EUR
+// using Java Swing
+    
+    
     public static void converter() {
 
         // Creating a new frame using JFrame
