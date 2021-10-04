@@ -6,45 +6,78 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
 import java.text.DecimalFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-import java.util.Scanner;
 
-public class Test {
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 
-    // Function to convert from EUR
-    // using Java Swing
-    public static float getData(String currency) throws Exception {
+public class currencyConverter {
+
+    // Function to fetch data from fixer.io API and storing locally in file
+    public static double fetchData(String currency) throws Exception {
         var url = "http://data.fixer.io/api/latest?access_key=69cb123726c63fd2a36f2804e73bb0b7";
         var req = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
         var cli = HttpClient.newBuilder().build();
         var res = cli.send(req, HttpResponse.BodyHandlers.ofString());
         double temp = 0;
-        for (String s : res.body().substring(res.body().lastIndexOf("{") + 1, res.body().indexOf("}")).split(",")) {
+        String data = "";
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("currencyRates.txt"));
+        writer.write(res.body());
+        writer.close();
+        data = res.body();
+
+        for (String s : data.substring(data.lastIndexOf("{") + 1, data.indexOf("}")).split(",")) {
             if (currency.equals(s.substring(1, 4))) {
                 temp = Double.parseDouble(s.substring(6));
             }
         }
-        return (float) temp;
+        System.out.println("getting data from API");
+        return temp;
     }
 
+    // getting data from local storage
+    public static double getData(String currency) throws Exception {
+        File file = new File("currencyRates.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        double temp = 0;
+        String st, data = "";
+        while ((st = br.readLine()) != null)
+            data += st;
+        for (String s : data.substring(data.lastIndexOf("{") + 1, data.indexOf("}")).split(",")) {
+            if (currency.equals(s.substring(1, 4))) {
+                temp = Double.parseDouble(s.substring(6));
+            }
+        }
+        System.out.println("getting data from file");
+        return temp;
+    }
+
+    // Function to convert from EUR
+    // using Java Swing
     public static void converter() {
 
         // Creating a new frame using JFrame
         JFrame f = new JFrame("CONVERTER");
 
         // Creating two labels
-        JLabel l1, l2;
+        JLabel l1;
 
-        // Creating two text fields.
-        // One for rupee and one for
-        // the dollar
+        // Creating three text fields.
+        // One for EUR and one for req
+        // another for converted data
         JTextField t0, t1, t2;
 
-        // Creating three buttons
+        // Creating two buttons
         JButton b1, b3;
 
         // Naming the labels and setting
@@ -82,12 +115,28 @@ public class Test {
                 t0.setText(t0.getText());
                 // Converting EUR to
                 double d1 = 0;
+                double d2 = 0;
+                File file = new File("currencyRates.txt");
                 try {
-                    d1 = d * getData(t0.getText());
+                    if (file.length() != 0) {
+                        BufferedReader br = new BufferedReader(new FileReader(file));
+                        String st, data = "", fDate = "";
+                        ZoneId zoneId = ZoneId.of("Europe/Brussels");
+                        ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+                        int currDate = zonedDateTime.getDayOfMonth();
+                        while ((st = br.readLine()) != null)
+                            data += st;
+                        fDate = data.substring(data.indexOf('-') + 4, data.indexOf('-') + 6);
+                        int fetchDate = Integer.parseInt(fDate.replaceFirst("0", ""));
+                        d2 = currDate > fetchDate ? fetchData(t0.getText()) : getData(t0.getText());
+                    } else {
+                        d2 = fetchData(t0.getText());
+                    }
                 } catch (Exception e1) {
 
                     e1.printStackTrace();
                 }
+                d1 = d * d2;
 
                 // Getting the string value of the
                 // calculated value
