@@ -20,15 +20,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 
-<<<<<<< HEAD:currencyConverter.java
-public class currencyConverter {
-
-    // Function to fetch data from fixer.io API and storing locally in file
-    public static double fetchData(String currency) throws Exception {
-=======
-//Function to fetch data from fixer.io API    
+    // fetching data from fixer.io API    
     public static double getData(String currency) throws Exception {
->>>>>>> aa0e0d763ec54e14dec886c9a56f6df5411e9751:Test.java
         var url = "http://data.fixer.io/api/latest?access_key=69cb123726c63fd2a36f2804e73bb0b7";
         var req = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
         var cli = HttpClient.newBuilder().build();
@@ -46,7 +39,6 @@ public class currencyConverter {
                 temp = Double.parseDouble(s.substring(6));
             }
         }
-<<<<<<< HEAD:currencyConverter.java
         System.out.println("getting data from API");
         return temp;
     }
@@ -68,18 +60,7 @@ public class currencyConverter {
         return temp;
     }
 
-    // Function to convert from EUR
     // using Java Swing
-=======
-        return temp;
-    }
-    
-    
-// Function to convert from EUR
-// using Java Swing
-    
-    
->>>>>>> aa0e0d763ec54e14dec886c9a56f6df5411e9751:Test.java
     public static void converter() {
 
         // Creating a new frame using JFrame
