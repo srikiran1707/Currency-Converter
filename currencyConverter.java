@@ -21,7 +21,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
     // fetching data from fixer.io API    
-    public static double getData(String currency) throws Exception {
+    public static double fetchData(String currency) throws Exception {
         var url = "http://data.fixer.io/api/latest?access_key=69cb123726c63fd2a36f2804e73bb0b7";
         var req = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
         var cli = HttpClient.newBuilder().build();
